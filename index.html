@@ -17,7 +17,7 @@ html,body{height:100%;margin:0}
 body{background:var(--bg);color:var(--tx);font-family:"Google Sans","Noto Sans JP",system-ui,sans-serif;overflow:hidden}
 button{font:inherit;color:inherit}
 svg{width:24px;height:24px;fill:currentColor}
-#app{height:100%;max-width:760px;margin:0 auto;display:flex;flex-direction:column;position:relative}
+#app{height:100%;max-width:760px;margin:0 auto;display:flex;flex-direction:column;position:relative;overflow:hidden}
 header{display:flex;align-items:center;gap:4px;padding:8px;min-height:56px}
 header h1{font-size:20px;font-weight:500;margin:0;flex:1;padding-left:4px}
 .ib{width:44px;height:44px;border:0;background:none;border-radius:50%;display:grid;place-items:center;cursor:pointer;flex:none}
@@ -63,8 +63,8 @@ code{background:var(--s);padding:1px 5px;border-radius:4px;font-size:.9em}pre co
 .box textarea{flex:1;border:0;background:none;outline:0;resize:none;font:inherit;font-size:16px;color:var(--tx);max-height:140px;padding:10px 0;line-height:1.4}
 .send{background:var(--ac);color:var(--bg)}.send:hover{background:var(--ac);opacity:.9}
 #scrim{position:absolute;inset:0;background:rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:.25s;z-index:10}
-#drawer{position:absolute;top:0;bottom:0;left:0;width:min(330px,88%);background:var(--s);z-index:11;transform:translateX(-102%);transition:transform .25s;display:flex;flex-direction:column;padding:8px 8px;border-radius:0 24px 24px 0}
-.open #scrim{opacity:1;pointer-events:auto}.open #drawer{transform:none}
+#drawer{position:absolute;top:0;bottom:0;left:0;width:min(330px,88%);background:var(--s);z-index:11;transform:translateX(-102%);visibility:hidden;transition:transform .25s,visibility .25s;display:flex;flex-direction:column;padding:8px 8px;border-radius:0 24px 24px 0}
+.open #scrim{opacity:1;pointer-events:auto}.open #drawer{transform:none;visibility:visible}
 .newbtn{display:flex;align-items:center;gap:12px;border:0;background:var(--s2);padding:12px 18px;border-radius:16px;font-size:15px;cursor:pointer;margin:4px 4px 12px;width:fit-content}
 .sec{font-size:13px;color:var(--sub);padding:8px 12px}
 #hist{flex:1;overflow-y:auto}
