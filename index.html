@@ -180,10 +180,11 @@ const drawer=o=>{app.classList.toggle("open",o);if(!o)hideMenu()};
 const setSend=b=>{$("send").innerHTML=ic(b?"stop":"send")};
 
 /* ---- 送信内容の組み立て ---- */
-function ctxOf(c){const ms=c.msgs.filter(m=>!m.err),ais=[];ms.forEach((m,i)=>m.r==="ai"&&ais.push(i));const n=ais.length;
+const live=c=>c.msgs.filter((m,i)=>!m.err&&!(m.r==="user"&&c.msgs[i+1]&&c.msgs[i+1].err));
+function ctxOf(c){const ms=live(c),ais=[];ms.forEach((m,i)=>m.r==="ai"&&ais.push(i));const n=ais.length;
  return ms.map((m,i)=>{const old=m.r==="ai"&&c.mode==="sum"&&m.sum&&ais.indexOf(i)<n-c.keep;return{role:m.r==="ai"?"model":"user",text:old?"【この話の要約】"+m.sum:m.t}})}
 function contents(c){const out=[];ctxOf(c).forEach(x=>{const l=out[out.length-1];if(l&&l.role===x.role)l.parts[0].text+="\n\n"+x.text;else out.push({role:x.role,parts:[{text:x.text}]})});return out}
-function plan(c){const s=(c.sys||"").length;return{sel:ctxOf(c).reduce((a,x)=>a+x.text.length,0)+s,full:c.msgs.filter(m=>!m.err).reduce((a,m)=>a+m.t.length,0)+s}}
+function plan(c){const s=(c.sys||"").length;return{sel:ctxOf(c).reduce((a,x)=>a+x.text.length,0)+s,full:live(c).reduce((a,m)=>a+m.t.length,0)+s}}
 
 /* ---- Gemini API ---- */
 async function errMsg(r){try{return "HTTP "+r.status+": "+(await r.json()).error.message}catch(e){return "HTTP "+r.status}}
@@ -256,6 +257,8 @@ async function send(){
  if(!cfg.key){toast("先にAPIキーを設定してください");openSettings();return}
  const c=cur;ta.value="";ta.style.height="auto";
  if(!chats.includes(c)){c.title=t.slice(0,24);chats.unshift(c)}
+ let cl=0;for(;;){const n=c.msgs.length,l=c.msgs[n-1],u=c.msgs[n-2];if(l&&l.err&&u&&u.r==="user"&&u.t.trim()===t){c.msgs.splice(n-2,2);cl=1}else break}
+ if(cl)renderChat();
  if(chat.querySelector(".hello"))chat.innerHTML="";
  c.msgs.push({r:"user",t});addMsg({r:"user",t});
  const am={r:"ai",t:"",pending:true},b=addMsg(am);b.innerHTML='<span class="dots"><span></span><span></span><span></span></span>';
