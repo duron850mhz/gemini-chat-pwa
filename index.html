@@ -249,11 +249,12 @@ const scrollDown=()=>{if(chat.scrollHeight-chat.scrollTop-chat.clientHeight<160)
 
 /* ---- 履歴メニュー: エクスポート / 削除 ---- */
 function showMenu(c,el){const m=$("cm"),dr=$("drawer").getBoundingClientRect(),r=el.getBoundingClientRect();m.innerHTML="";
- [["エクスポート (Markdown)","dl",()=>exp(c,"md")],["エクスポート (JSON)","dl",()=>exp(c,"json")],["削除","trash",()=>del(c),"dg"]].forEach(([l,i,f,k])=>{
+ [["名前を変更","edit",()=>rename(c)],["エクスポート (Markdown)","dl",()=>exp(c,"md")],["エクスポート (JSON)","dl",()=>exp(c,"json")],["削除","trash",()=>del(c),"dg"]].forEach(([l,i,f,k])=>{
   const b=document.createElement("button");b.innerHTML=ic(i)+l;if(k)b.className=k;b.onclick=()=>{hideMenu();f()};m.appendChild(b)});
- m.style.display="block";m.style.top=Math.max(8,Math.min(r.bottom-dr.top,dr.height-170))+"px"}
+ m.style.display="block";m.style.top=Math.max(8,Math.min(r.bottom-dr.top,dr.height-220))+"px"}
 function hideMenu(){$("cm").style.display="none"}
 document.addEventListener("click",e=>{if(!e.target.closest("#cm"))hideMenu()});
+function rename(c){const t=prompt("チャットの名前を変更",c.title);if(t===null)return;const v=t.trim();if(!v)return toast("名前を入力してください");c.title=v.slice(0,60);persist();renderHist();toast("名前を変更しました")}
 function del(c){if(!confirm("「"+c.title+"」を削除しますか？"))return;chats=chats.filter(x=>x!==c);if(cur===c){cur=draft();renderChat()}persist();renderHist();toast("削除しました")}
 function dl(name,mime,data){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([data],{type:mime}));a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 const safe=s=>s.replace(/[\\/:*?"<>|\s]+/g,"_").slice(0,40)||"chat";
